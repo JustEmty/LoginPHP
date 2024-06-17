@@ -9,7 +9,7 @@
                     <ul>
                         <?php
                             $file = explode("/", $_SERVER["PHP_SELF"]);
-                            switch($file[4]){
+                            switch($file[5]){
                                 case "index.php":
                                     echo "
                                         <li class=\"active\"><a href=\"index.php\">Home</a></li>

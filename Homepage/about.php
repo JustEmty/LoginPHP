@@ -57,7 +57,7 @@
 				<div class="col-md-8 col-md-offset-2 text-center fh5co-heading">
 					<h2>About This Project</h2>
 					<p>
-						Created on 17/06/2024. 
+						Created on 16 - 17/06/2024. 
 						This project mainly focuses on a login system created by PHP language including 
 						sign-in, sign-up, and logout functions to handle user information.
 					</p>
