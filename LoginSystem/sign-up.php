@@ -1,6 +1,7 @@
 <?php
     session_start();
     include("database.php");
+	include("AuthController.php");
 ?>
 <!DOCTYPE html>
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
@@ -93,28 +94,8 @@
     if(empty($_POST["username"]) && empty($_POST["password"])) return;
 
     $username = filter_input(INPUT_POST, "username", FILTER_SANITIZE_SPECIAL_CHARS);
+	$password = filter_input(INPUT_POST, "password", FILTER_SANITIZE_SPECIAL_CHARS);
 
-    $select_all_username = $pdo->prepare("SELECT * FROM `users` WHERE username = :username");
-    $select_all_username->bindParam(":username", $username);
-    $select_all_username->execute();
-    $result = $select_all_username->fetchAll(PDO::FETCH_ASSOC);
-
-    if(empty($result)){
-        unset($_SESSION['exist-username']);
-        $password = filter_input(INPUT_POST, "password", FILTER_SANITIZE_SPECIAL_CHARS);
-        $hashing_password = password_hash($password, PASSWORD_DEFAULT);
-
-        $insert_user_info = $pdo->prepare("INSERT INTO `users` (`username`, `password`) VALUES (:username, :password)");
-        $insert_user_info->bindParam(":username", $username);
-        $insert_user_info->bindParam(":password", $hashing_password);
-        $insert_user_info->execute();
-
-        $_SESSION["username"] = $username;
-        $_SESSION["password_hash"] = $hashing_password;
-        header('location: ../Homepage/index.php');
-        return;
-    }else{
-        $_SESSION['exist-username'] = "Username already existed";
-        header('location: ' . htmlspecialchars($_SERVER["PHP_SELF"]));
-    }
+	$authController = new AuthController(new Database());
+	$authController->sign_up($username, $password);
 ?>

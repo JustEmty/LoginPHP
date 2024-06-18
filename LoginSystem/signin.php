@@ -1,6 +1,7 @@
 <?php
     session_start();
     include("database.php");
+	include("AuthController.php");
 ?>
 <!DOCTYPE html>
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
@@ -82,29 +83,9 @@
 <?php 
     if(isset($_SERVER["REQUEST_METHOD"]) != "POST") return;
 
-    $username = filter_input(INPUT_POST, "username", FILTER_SANITIZE_SPECIAL_CHARS);
+	$username = filter_input(INPUT_POST, "username", FILTER_SANITIZE_SPECIAL_CHARS);
+	$password = filter_input(INPUT_POST, "password", FILTER_SANITIZE_SPECIAL_CHARS);
 
-    $select_all_username = $pdo->prepare("SELECT * FROM `users` WHERE username = :username");
-    $select_all_username->bindParam(":username", $username);
-    $select_all_username->execute();
-    $result = $select_all_username->fetchAll(PDO::FETCH_ASSOC);
-    
-    if(count($result) > 0){
-        unset($_SESSION['error-username']);
-        $password = filter_input(INPUT_POST, "password", FILTER_SANITIZE_SPECIAL_CHARS);
-
-        if(password_verify($password, $result[0]["password"])){
-            $_SESSION["username"] = $username;
-            $_SESSION["password"] = $password;
-            header("location: ../Homepage/index.php");
-            return;
-        }else{
-            $_SESSION['error-pass'] = "Username or password incorrect";
-            header("location: " . htmlspecialchars($_SERVER["PHP_SELF"]));
-            return;
-        }
-    }else{
-        $_SESSION['error-username'] = "Username or password incorrect";
-        return;
-    }
+	$auth_controller = new AuthController(new Database());
+	$auth_controller->sign_in($username, $password);
 ?>
